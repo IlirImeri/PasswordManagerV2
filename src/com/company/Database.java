@@ -181,8 +181,26 @@ public class Database {
         }
     }
 
-    public void updateData(){
-        //TODO
+    public void updateData(String newPassword, String rowID){
+        try {
+            c=connect();
+            stmt = c.createStatement();
+            c.setAutoCommit(false);
+            PreparedStatement ps = null;
+            String sql = "UPDATE PasswordManager set password = ? WHERE ID = ? ";
+
+            ps = c.prepareStatement(sql);
+            ps.setString(1, newPassword);
+            ps.setString(2, rowID);
+            ps.execute();
+            System.out.println("Data updated successfully");
+            stmt.close();
+            c.commit();
+            c.close();
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+            System.exit(0);
+        }
     }
 
     public void printRow() {

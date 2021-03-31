@@ -6,7 +6,7 @@ public class Main {
 
     public static void main(String[] args) {
         int scelta;
-        String username, password, email, website, search;
+        String username, password, email, website, search, ID, newPassword;
         Scanner input = new Scanner(System.in);
         Database database = new Database();
 
@@ -48,15 +48,20 @@ public class Main {
                     database.deleteData(search);
                     break;
                 case 4:
-                    database.generateID();
+                    System.out.println("Nuova password:");
+                    input.nextLine();
+                    newPassword = input.nextLine();
+                    System.out.println("ID del row:");
+                    ID = input.nextLine();
+                    database.updateData(newPassword,ID);
                     break;
                 case 5:
                     System.out.println("Ricerca:");
+                    input.nextLine();
                     search = input.nextLine();
                     database.selectData(search);
                     break;
                 default:
-                    System.out.println("Uscita");
             }
         } while (scelta != 0);
     }
