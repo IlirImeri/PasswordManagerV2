@@ -12,9 +12,6 @@ public class Database {
     private String Website;
     private String ID;
 
-    String sql = "INSERT INTO PasswordManager (UserName,Password,Email,Website,ID) " +
-            "VALUES (?, ?, ?, ?, ?)";
-
     public String getUserName() {
         return UserName;
     }
@@ -60,7 +57,6 @@ public class Database {
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
             System.exit(0);
         }
-        System.out.println("Opened database successfully");
         return c;
     }
 
@@ -82,7 +78,6 @@ public class Database {
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
             System.exit(0);
         }
-        System.out.println("Table created successfully");
     }
 
     public void insertData(String UserName, String Password, String Email, String Website){
@@ -90,13 +85,14 @@ public class Database {
             c=connect();
             stmt = c.createStatement();
             c.setAutoCommit(false);
+            String sql = "INSERT INTO PasswordManager (UserName,Password,Email,Website,ID) " +
+                    "VALUES (?, ?, ?, ?, ?)";
             PreparedStatement ps = c.prepareStatement(sql);
             ps.setString(1, UserName);
             ps.setString(2, Password);
             ps.setString(3, Email);
             ps.setString(4, Website);
             ps.setString(5, generateID());
-            System.out.println("Data inserted successfully");
             ps.executeUpdate();
             ps.close();
             c.commit();
@@ -107,13 +103,13 @@ public class Database {
         }
     }
 
-    public void selectData(String searchFromWebsiteName){
+    public void selectData(String selectByURL){
         try {
             c=connect();
             stmt = c.createStatement();
             c.setAutoCommit(false);
 
-            ResultSet rs = stmt.executeQuery( "SELECT * FROM PasswordManager WHERE Website LIKE '%" +searchFromWebsiteName+ "%'");
+            ResultSet rs = stmt.executeQuery( "SELECT * FROM PasswordManager WHERE Website LIKE '%" +selectByURL+ "%'");
 
             while ( rs.next() ) {
                 UserName = rs.getString("UserName");
@@ -123,7 +119,6 @@ public class Database {
                 ID = rs.getString("ID");
                 printRow();
             }
-            System.out.println("Operation done successfully");
             rs.close();
             stmt.close();
             c.commit();
@@ -170,7 +165,6 @@ public class Database {
 
                 printRow();
             }
-            System.out.println("Printing done successfully");
             rs.close();
             stmt.close();
             c.commit();
@@ -193,7 +187,6 @@ public class Database {
             ps.setString(1, newPassword);
             ps.setString(2, rowID);
             ps.execute();
-            System.out.println("Data updated successfully");
             stmt.close();
             c.commit();
             c.close();

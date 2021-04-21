@@ -43,7 +43,7 @@ public class Main {
                     break;
                 case 3:
                     input.nextLine();
-                    System.out.println("Cosa vuoi rimouvere");
+                    System.out.println("ID della riga che vuoi cancellare");
                     search = input.nextLine();
                     database.deleteData(search);
                     break;
