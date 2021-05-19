@@ -19,6 +19,7 @@ public class Main {
             System.out.println("\t3 - Rimuovere valori dal database");
             System.out.println("\t4 - Aggiornare valori dal database");
             System.out.println("\t5 - Cercare valori nel database");
+            System.out.println("\t6 - Generate password");
             System.out.println("\t0 - Uscita");
             System.out.println();
             System.out.println("Scelta:");
@@ -60,6 +61,11 @@ public class Main {
                     input.nextLine();
                     search = input.nextLine();
                     database.selectData(search);
+                    break;
+                case 6:
+                    PasswordGenerator p = new PasswordGenerator();
+                    p.generatePassword();
+                    System.out.println(p);
                     break;
                 default:
             }
