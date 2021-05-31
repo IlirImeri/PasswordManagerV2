@@ -2,8 +2,13 @@ package com.company;
 
 import AES256.AES256;
 import BCrypt.BCrypt;
+import Validators.EmailValidator;
+import Validators.WebsiteValidator;
 
 import java.util.Scanner;
+
+import static Validators.PasswordValidator.checkPassword;
+
 
 public class Main {
 
@@ -95,18 +100,35 @@ public class Main {
                             PasswordGenerator p = new PasswordGenerator();
                             p.generatePassword();
                             password = p.toString();
+                            checkPassword(password);
                             hashedPassword = AES256.encrypt(password);
                             System.out.println("Password: " + password);
                         }else{
                             System.out.println("Password:");
                             password = input.nextLine();
+                            checkPassword(password);
                             hashedPassword = AES256.encrypt(password);
                         }
+
                         System.out.println("Email:");
                         email = input.nextLine();
+                        if (!EmailValidator.isValid(email)){
+                            do {
+                                System.out.println("Please insert a valid email");
+                                email = input.nextLine();
+                            }while (!EmailValidator.isValid(email));
+                        }
+
                         System.out.println("Website:");
                         website = input.nextLine();
-                        database.insertData(username,hashedPassword,email,website);
+                        if (!WebsiteValidator.isValid(website)){
+                            do {
+                                System.out.println("Please insert a valid URL");
+                                website = input.nextLine();
+                            }while (!WebsiteValidator.isValid(website));
+                        }
+
+                        database.insertData(username,hashedPassword,email.toLowerCase(),website);
                         break;
                     case 3:
                         input.nextLine();
@@ -133,6 +155,7 @@ public class Main {
                         PasswordGenerator p = new PasswordGenerator();
                         p.generatePassword();
                         System.out.println(p);
+                        checkPassword(p.toString());
                         break;
                     default:
                 }
