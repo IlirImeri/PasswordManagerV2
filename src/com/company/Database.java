@@ -1,5 +1,7 @@
 package com.company;
 
+import AES256.AES256;
+
 import java.sql.*;
 import java.util.UUID;
 
@@ -198,7 +200,7 @@ public class Database {
 
     public void printRow() {
         System.out.println("UserName: " + UserName + "\n" +
-                "Password: " + Password + "\n" +
+                "Password: " + AES256.decrypt(Password) + "\n" +
                 "Email: " + Email + "\n" +
                 "Website: " + Website + "\n" +
                 "ID: " + ID + "\n");
