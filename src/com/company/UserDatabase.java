@@ -22,29 +22,6 @@ public class UserDatabase {
 
     }
 
-    public String getUserName() {
-        return UserName;
-    }
-
-    public void setUserName(String userName) {
-        UserName = userName;
-    }
-
-    public String getPassword() {
-        return Password;
-    }
-
-    public void setPassword(String password) {
-        Password = password;
-    }
-
-
-
-    public String generateID(){
-        ID = String.valueOf(UUID.randomUUID());
-        return ID;
-    }
-
     public Connection connect(){
         try {
             Class.forName("org.sqlite.JDBC");
