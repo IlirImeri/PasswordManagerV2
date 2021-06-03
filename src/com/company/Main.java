@@ -37,10 +37,23 @@ public class Main {
             loginPassword = loginCredentials.nextLine();
             while(!user.searchUsers(loginUsername)) {
                 System.out.println("User doesn't exist");
-                System.out.println("Inserisci Username");
+                System.out.println("Don't have an account ? (1)");
+                System.out.println("Try again (0)");
                 loginUsername = loginCredentials.nextLine();
-                System.out.println("Password: ");
-                loginPassword = loginCredentials.nextLine();
+                if (loginUsername.equals("1")){
+                    System.out.println("Crea Username");
+                    loginUsername = loginCredentials.nextLine();
+                    System.out.println("Inserisci Password");
+                    loginPassword = loginCredentials.nextLine();
+                    String hashedPassword = BCrypt.hashpw(loginPassword, BCrypt.gensalt(12));
+                    user.insertData(loginUsername, hashedPassword);
+                    System.out.println("User created successfully");
+                }else if (loginUsername.equals("0")) {
+                    System.out.println("Inserisci Username");
+                    loginUsername = loginCredentials.nextLine();
+                    System.out.println("Password: ");
+                    loginPassword = loginCredentials.nextLine();
+                }
             }
             while (!BCrypt.checkpw(loginPassword, user.selectData(loginUsername))){
                 System.err.println("Wrong Username or Password");
