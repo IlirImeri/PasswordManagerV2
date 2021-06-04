@@ -13,15 +13,6 @@ public class UserDatabase {
     String sql = "INSERT INTO USERS (UserName,Password, ID) " +
             "VALUES (?, ?, ?)";
 
-    public UserDatabase(String userName, String password) {
-        UserName = userName;
-        Password = password;
-    }
-
-    public String getID() {
-        return ID;
-    }
-
     public UserDatabase() {
 
     }
@@ -179,74 +170,5 @@ public class UserDatabase {
             System.exit(0);
         }
         return ID;
-    }
-
-    public void deleteData(String user){
-        String sql3 = "DELETE FROM USERS WHERE UserName LIKE '%" +user+ "%'";
-        try {
-            c=connect();
-            stmt = c.createStatement();
-            c.setAutoCommit(false);
-
-            PreparedStatement pstmt = c.prepareStatement(sql3);
-            pstmt.executeUpdate();
-
-            stmt.close();
-            c.commit();
-            c.close();
-        } catch ( Exception e ) {
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
-        }
-    }
-
-    public void printDatabase(){
-        try {
-            c=connect();
-            stmt = c.createStatement();
-            c.setAutoCommit(false);
-
-            ResultSet rs = stmt.executeQuery( "SELECT * FROM USERS");
-
-            while ( rs.next() ) {
-                UserName = rs.getString("UserName");
-                Password = rs.getString("Password");
-
-                printRow();
-            }
-            rs.close();
-            stmt.close();
-            c.commit();
-            c.close();
-        } catch ( Exception e ) {
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
-        }
-    }
-
-    public void updateData(String newPassword, String user){
-        try {
-            c=connect();
-            stmt = c.createStatement();
-            c.setAutoCommit(false);
-            PreparedStatement ps = null;
-            String sql = "UPDATE USERS set password = ? WHERE UserName = ? ";
-
-            ps = c.prepareStatement(sql);
-            ps.setString(1, newPassword);
-            ps.setString(2, user);
-            ps.execute();
-            stmt.close();
-            c.commit();
-            c.close();
-        } catch ( Exception e ) {
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
-        }
-    }
-
-    public void printRow() {
-        System.out.println("UserName: " + UserName + "\n" +
-                "Password: " + Password);
     }
 }

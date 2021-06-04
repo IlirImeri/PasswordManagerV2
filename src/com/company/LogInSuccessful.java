@@ -9,13 +9,11 @@ import java.util.Scanner;
 import static Validators.PasswordValidator.checkPassword;
 
 public class LogInSuccessful {
-    public static void logInSuccessful(){
+    public static void logInSuccessful(Database database){
         int scelta;
         String username, password, email, website, search, ID, newPassword;
         Scanner input = new Scanner(System.in);
-        Database database = new Database();
 
-        database.createTable();
 
         do {
             System.out.println("-----------MENU-----------");
@@ -25,6 +23,7 @@ public class LogInSuccessful {
             System.out.println("\t4 - UPDATE PASSWORD");
             System.out.println("\t5 - SEARCH BY URL");
             System.out.println("\t6 - PASSWORD GENERATOR");
+            System.out.println("\t7 - SETTINGS");
             System.out.println("\t0 - EXIT");
             System.out.println();
             System.out.println("Your choice?:");
@@ -34,6 +33,8 @@ public class LogInSuccessful {
                 case 1:
                     System.out.println("Database:");
                     System.out.println();
+                    if (database.isEmpty())
+                        System.out.println("There aren't any passwords saved");
                     database.printDatabase();
                     break;
                 case 2:
@@ -78,25 +79,34 @@ public class LogInSuccessful {
                     database.insertData(username,hashedPassword,email.toLowerCase(),website);
                     break;
                 case 3:
-                    input.nextLine();
-                    System.out.println("ID of the password you want to delete");
-                    search = input.nextLine();
-                    database.deleteData(search);
+                    if(!database.isEmpty()){
+                        input.nextLine();
+                        System.out.println("ID of the password you want to delete");
+                        search = input.nextLine();
+                        database.deleteData(search);
+                    }else
+                        System.out.println("Empty Database");
                     break;
                 case 4:
-                    System.out.println("New Password:");
-                    input.nextLine();
-                    newPassword = input.nextLine();
-                    hashedPassword = AES256.encrypt(newPassword);
-                    System.out.println("Row ID:");
-                    ID = input.nextLine();
-                    database.updateData(hashedPassword,ID);
+                    if (!database.isEmpty()) {
+                        System.out.println("New Password:");
+                        input.nextLine();
+                        newPassword = input.nextLine();
+                        hashedPassword = AES256.encrypt(newPassword);
+                        System.out.println("Row ID:");
+                        ID = input.nextLine();
+                        database.updateData(hashedPassword, ID);
+                    }else
+                        System.out.println("Empty Database");
                     break;
                 case 5:
-                    System.out.println("Search by URL:");
-                    input.nextLine();
-                    search = input.nextLine();
-                    database.selectData(search);
+                    if (!database.isEmpty()) {
+                        System.out.println("Search by URL:");
+                        input.nextLine();
+                        search = input.nextLine();
+                        database.selectData(search);
+                    }else
+                        System.out.println("Empty Database");
                     break;
                 case 6:
                     PasswordGenerator p = new PasswordGenerator();

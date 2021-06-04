@@ -99,8 +99,55 @@ public class Database {
         }
     }
 
+    public boolean isEmpty(){
+        boolean isEmpty = true;
+        try {
+            c=connect();
+            stmt = c.createStatement();
+            c.setAutoCommit(false);
+
+            ResultSet rs = stmt.executeQuery( "SELECT * FROM PasswordManager");
+
+            while ( rs.next() ) {
+                UserName = rs.getString("UserName");
+                Password = rs.getString("Password");
+                Email = rs.getString("Email");
+                Website = rs.getString("Website");
+                ID = rs.getString("ID");
+                isEmpty=false;
+            }
+            rs.close();
+            stmt.close();
+            c.commit();
+            c.close();
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+            System.exit(0);
+        }
+        return isEmpty;
+    }
+
     public void deleteData(String ID){
         String sql3 = "DELETE FROM PasswordManager WHERE ID LIKE '%" +ID+ "%'";
+        try {
+            c=connect();
+            stmt = c.createStatement();
+            c.setAutoCommit(false);
+
+            PreparedStatement pstmt = c.prepareStatement(sql3);
+            pstmt.executeUpdate();
+
+            stmt.close();
+            c.commit();
+            c.close();
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+            System.exit(0);
+        }
+    }
+
+    public void dropDatabase(){
+        String sql3 = "DELETE FROM PasswordManager";
         try {
             c=connect();
             stmt = c.createStatement();
