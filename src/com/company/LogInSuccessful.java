@@ -23,7 +23,6 @@ public class LogInSuccessful {
             System.out.println("\t4 - UPDATE PASSWORD");
             System.out.println("\t5 - SEARCH BY URL");
             System.out.println("\t6 - PASSWORD GENERATOR");
-            System.out.println("\t7 - SETTINGS");
             System.out.println("\t0 - EXIT");
             System.out.println();
             System.out.println("Your choice?:");
