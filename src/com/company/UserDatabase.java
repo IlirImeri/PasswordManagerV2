@@ -10,16 +10,25 @@ public class UserDatabase {
     private String Password;
     private String ID;
 
-    String sql = "INSERT INTO USERS (UserName,Password) " +
-            "VALUES (?, ?)";
+    String sql = "INSERT INTO USERS (UserName,Password, ID) " +
+            "VALUES (?, ?, ?)";
 
     public UserDatabase(String userName, String password) {
         UserName = userName;
         Password = password;
     }
 
+    public String getID() {
+        return ID;
+    }
+
     public UserDatabase() {
 
+    }
+
+    public String generateID(){
+        ID = String.valueOf(UUID.randomUUID());
+        return ID;
     }
 
     public Connection connect(){
@@ -39,7 +48,8 @@ public class UserDatabase {
             stmt = c.createStatement();
             String sql = "CREATE TABLE IF NOT EXISTS USERS " +
                     "(UserName           TEXT     NOT NULL," +
-                    " Password           TEXT     NOT NULL)";
+                    " Password           TEXT     NOT NULL," +
+                    "ID                  TEXT     NOT NULL)";
             stmt.executeUpdate(sql);
             stmt.close();
             c.close();
@@ -50,7 +60,33 @@ public class UserDatabase {
         }
     }
 
-    public void insertData(String UserName, String Password){
+    public boolean isEmpty(){
+        boolean isEmpty = true;
+        try {
+            c=connect();
+            stmt = c.createStatement();
+            c.setAutoCommit(false);
+
+            ResultSet rs = stmt.executeQuery( "SELECT * FROM USERS");
+
+            while ( rs.next() ) {
+                UserName = rs.getString("UserName");
+                Password = rs.getString("Password");
+                ID = rs.getString("ID");
+                isEmpty=false;
+            }
+            rs.close();
+            stmt.close();
+            c.commit();
+            c.close();
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+            System.exit(0);
+        }
+        return isEmpty;
+    }
+
+    public void insertData(String UserName, String Password, String ID){
         try {
             c=connect();
             stmt = c.createStatement();
@@ -58,6 +94,7 @@ public class UserDatabase {
             PreparedStatement ps = c.prepareStatement(sql);
             ps.setString(1, UserName);
             ps.setString(2, Password);
+            ps.setString(3, ID);
             ps.executeUpdate();
             ps.close();
             c.commit();
@@ -80,6 +117,7 @@ public class UserDatabase {
             while ( rs.next() ) {
                 UserName = rs.getString("UserName");
                 Password = rs.getString("Password");
+                ID = rs.getString("ID");
                 if(UserName.equals(username)){
                     isFound = true;
                 }
@@ -95,7 +133,7 @@ public class UserDatabase {
         return isFound;
     }
 
-    public String selectData(String username){
+    public String findPassword(String username){
         try {
             c=connect();
             stmt = c.createStatement();
@@ -106,6 +144,7 @@ public class UserDatabase {
             while ( rs.next() ) {
                 UserName = rs.getString("UserName");
                 Password = rs.getString("Password");
+                ID = rs.getString("ID");
             }
             rs.close();
             stmt.close();
@@ -116,6 +155,30 @@ public class UserDatabase {
             System.exit(0);
         }
         return Password;
+    }
+
+    public String selectID(String username){
+        try {
+            c=connect();
+            stmt = c.createStatement();
+            c.setAutoCommit(false);
+
+            ResultSet rs = stmt.executeQuery( "SELECT * FROM USERS WHERE UserName LIKE '%" +username+ "%'");
+
+            while ( rs.next() ) {
+                UserName = rs.getString("UserName");
+                Password = rs.getString("Password");
+                ID = rs.getString("ID");
+            }
+            rs.close();
+            stmt.close();
+            c.commit();
+            c.close();
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+            System.exit(0);
+        }
+        return ID;
     }
 
     public void deleteData(String user){
