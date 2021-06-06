@@ -28,22 +28,30 @@ public class Main {
             String hashedPassword = BCrypt.hashpw(loginPassword, BCrypt.gensalt(12));
             String hashedID =  BCrypt.hashpw(ID, BCrypt.gensalt(12));
             user.insertData(loginUsername, hashedPassword, hashedID);
-        }else{
+        }else {
             System.out.println("Log In");
             System.out.print("Username: ");
             loginUsername = loginUser.nextLine();
             System.out.print("Password: ");
             loginPassword = loginPass.nextLine();
-            while(!user.searchUsers(loginUsername)) {
-                int cont = 0;
-                while (!BCrypt.checkpw(loginPassword, user.findPassword(loginUsername))){
+            int cont = 0;
+            while(!user.searchUsers(loginUsername) || !BCrypt.checkpw(loginPassword, user.findPassword(loginUsername))) {
+                if (!user.searchUsers(loginUsername)) {
+                    System.out.print("User does not exist");
+                    System.out.println(" Try again ! ");
+                    System.out.print("Username: ");
+                    loginUsername = loginUser.nextLine();
+                    System.out.print("Password: ");
+                    loginPassword = loginPass.nextLine();
+                }
+                if( !BCrypt.checkpw(loginPassword, user.findPassword(loginUsername))) {
                     cont++;
                     System.out.println("Wrong Username or Password");
                     System.out.print("Enter Username: ");
                     loginUsername = loginUser.nextLine();
                     System.out.print("Enter Password: ");
                     loginPassword = loginPass.nextLine();
-                    if (cont == 2 ) {
+                    if (cont == 2) {
                         System.out.println("Forgot password? (YES or NO)");
                         Scanner inputLine = new Scanner(System.in);
                         String in = inputLine.nextLine();
@@ -54,8 +62,8 @@ public class Main {
                                 System.out.println("Welcome " + loginUsername.toUpperCase());
                                 LogInSuccessful.logInSuccessful(database);
                             }
-                        }else if (in.equalsIgnoreCase("no")) {
-                            cont=0;
+                        } else if (in.equalsIgnoreCase("no")) {
+                            cont = 0;
                             System.out.print("Enter Username: ");
                             loginUsername = loginUser.nextLine();
                             System.out.print("Enter Password: ");
