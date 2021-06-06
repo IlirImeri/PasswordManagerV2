@@ -5,4 +5,5 @@
 out
 database.db
 users.db
+src/META-INF
 PasswordManagerV2.iml
