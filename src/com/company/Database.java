@@ -3,6 +3,9 @@ package com.company;
 import AES256.AES256;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 public class Database {
@@ -180,7 +183,12 @@ public class Database {
                 Website = rs.getString("Website");
                 ID = rs.getString("ID");
 
-                printRow();
+                //printRow();
+                List<List<String>> rows = new ArrayList<>();
+                List<String> headers = Arrays.asList("Username", "Password", "Email", "URL", "ID");
+                rows.add(headers);
+                rows.add(Arrays.asList(UserName, Password, Email, Website, ID));
+                System.out.println(formatAsTable(rows));
             }
             rs.close();
             stmt.close();
@@ -213,11 +221,32 @@ public class Database {
         }
     }
 
+    private String formatAsTable(List<List<String>> rows){
+        int[] maxLengths = new int[rows.get(0).size()];
+        for (List<String> row : rows)
+        {
+            for (int i = 0; i < row.size(); i++)
+            {
+                maxLengths[i] = Math.max(maxLengths[i], row.get(i).length());
+            }
+        }
+
+        StringBuilder formatBuilder = new StringBuilder();
+        for (int maxLength : maxLengths)
+        {
+            formatBuilder.append("%-").append(maxLength + 2).append("s");
+        }
+        String format = formatBuilder.toString();
+
+        StringBuilder result = new StringBuilder();
+        for (List<String> row : rows)
+        {
+            result.append(String.format(format, row.toArray(new String[0]))).append("\n");
+        }
+        return result.toString();
+    }
+
     public void printRow() {
-        System.out.println("UserName: " + UserName + "\n" +
-                "Password: " + AES256.decrypt(Password) + "\n" +
-                "Email: " + Email + "\n" +
-                "Website: " + Website + "\n" +
-                "ID: " + ID + "\n");
+
     }
 }
