@@ -1,12 +1,11 @@
 package com.company;
 
 import AES256.AES256;
+import dnl.utils.text.table.TextTable;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Stream;
 
 public class Database {
     private Connection c = null;
@@ -90,7 +89,12 @@ public class Database {
                 Email = rs.getString("Email");
                 Website = rs.getString("Website");
                 ID = rs.getString("ID");
-                printRow();
+
+                List<List<String>> rows = new ArrayList<>();
+                List<String> headers = Arrays.asList("Username", "Password", "Email", "URL", "ID");
+                rows.add(headers);
+                rows.add(Arrays.asList(UserName, AES256.decrypt(Password), Email, Website, ID));
+                System.out.println(formatAsTable(rows));
             }
             rs.close();
             stmt.close();
@@ -176,19 +180,24 @@ public class Database {
 
             ResultSet rs = stmt.executeQuery( "SELECT * FROM PasswordManager");
 
+
             while ( rs.next() ) {
                 UserName = rs.getString("UserName");
                 Password = rs.getString("Password");
                 Email = rs.getString("Email");
                 Website = rs.getString("Website");
                 ID = rs.getString("ID");
+                int rows, columns;
+                Object[][] data = new Object[100][50];
 
-                //printRow();
-                List<List<String>> rows = new ArrayList<>();
-                List<String> headers = Arrays.asList("Username", "Password", "Email", "URL", "ID");
-                rows.add(headers);
-                rows.add(Arrays.asList(UserName, Password, Email, Website, ID));
-                System.out.println(formatAsTable(rows));
+                for (rows = 0; rows < 100 ; rows++) {
+                    for (columns = 0; columns < 50; columns++) {
+                        data[rows][columns] = rows + columns;
+                    }
+                }
+                String[] columnNames = {"Username","Password","Email","URL","ID"};
+                TextTable tt = new TextTable(columnNames,data);
+                tt.printTable();
             }
             rs.close();
             stmt.close();
@@ -246,7 +255,4 @@ public class Database {
         return result.toString();
     }
 
-    public void printRow() {
-
-    }
 }
