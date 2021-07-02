@@ -1,11 +1,12 @@
 package com.company;
 
 import AES256.AES256;
-import dnl.utils.text.table.TextTable;
 
 import java.sql.*;
-import java.util.*;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 public class Database {
     private Connection c = null;
@@ -89,12 +90,7 @@ public class Database {
                 Email = rs.getString("Email");
                 Website = rs.getString("Website");
                 ID = rs.getString("ID");
-
-                List<List<String>> rows = new ArrayList<>();
-                List<String> headers = Arrays.asList("Username", "Password", "Email", "URL", "ID");
-                rows.add(headers);
-                rows.add(Arrays.asList(UserName, AES256.decrypt(Password), Email, Website, ID));
-                System.out.println(formatAsTable(rows));
+                printRow();
             }
             rs.close();
             stmt.close();
@@ -180,24 +176,14 @@ public class Database {
 
             ResultSet rs = stmt.executeQuery( "SELECT * FROM PasswordManager");
 
-
             while ( rs.next() ) {
                 UserName = rs.getString("UserName");
                 Password = rs.getString("Password");
                 Email = rs.getString("Email");
                 Website = rs.getString("Website");
                 ID = rs.getString("ID");
-                int rows, columns;
-                Object[][] data = new Object[100][50];
 
-                for (rows = 0; rows < 100 ; rows++) {
-                    for (columns = 0; columns < 50; columns++) {
-                        data[rows][columns] = rows + columns;
-                    }
-                }
-                String[] columnNames = {"Username","Password","Email","URL","ID"};
-                TextTable tt = new TextTable(columnNames,data);
-                tt.printTable();
+                printRow();
             }
             rs.close();
             stmt.close();
@@ -230,29 +216,11 @@ public class Database {
         }
     }
 
-    private String formatAsTable(List<List<String>> rows){
-        int[] maxLengths = new int[rows.get(0).size()];
-        for (List<String> row : rows)
-        {
-            for (int i = 0; i < row.size(); i++)
-            {
-                maxLengths[i] = Math.max(maxLengths[i], row.get(i).length());
-            }
-        }
-
-        StringBuilder formatBuilder = new StringBuilder();
-        for (int maxLength : maxLengths)
-        {
-            formatBuilder.append("%-").append(maxLength + 2).append("s");
-        }
-        String format = formatBuilder.toString();
-
-        StringBuilder result = new StringBuilder();
-        for (List<String> row : rows)
-        {
-            result.append(String.format(format, row.toArray(new String[0]))).append("\n");
-        }
-        return result.toString();
+    public void printRow() {
+        System.out.println("UserName: " + UserName + "\n" +
+                "Password: " + AES256.decrypt(Password) + "\n" +
+                "Email: " + Email + "\n" +
+                "Website: " + Website + "\n" +
+                "ID: " + ID + "\n");
     }
-
 }
